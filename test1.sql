@@ -1,0 +1,40 @@
+CREATE TABLE BOARD(
+	BNO NUMBER(3) PRIMARY KEY, 
+	NAME VARCHAR2(20) NOT NULL, 
+	PASSWORD VARCHAR2(20) NOT NULL,
+	TITLE VARCHAR2(20) NOT NULL,
+	CONTENT VARCHAR2(20) NOT NULL,
+	READCNT NUMBER(3) DEFAULT '0', 
+	REGDATE DATE DEFAULT SYSDATE	
+);
+
+--시퀀스 생성 : 1씩 증가 BOARD_SEQ
+CREATE SEQUENCE BOARD_SEQ;
+
+CREATE TABLE board2(
+  no       NUMBER   NOT NULL,
+  title    VARCHAR2(20) NOT NULL,
+  content  VARCHAR2(100) NOT NULL,
+  regidate DATE     DEFAULT sysdate NOT NULL,
+  id       VARCHAR2(20) NOT NULL,
+  CONSTRAINT PK_board PRIMARY KEY (no)
+);
+
+CREATE TABLE membertbl(
+  id       VARCHAR2(20) NOT NULL,
+  password VARCHAR2(30) NOT NULL,
+  name     VARCHAR2(20) NOT NULL,
+  age      NUMBER  ,
+  job      VARCHAR2(20),
+  grade    VARCHAR2(20) DEFAULT 'silver' NOT NULL,
+  point    NUMBER  DEFAULT 0 NOT NULL,
+  CONSTRAINT PK_membertbl PRIMARY KEY (id)
+);
+
+--COMMENT ON COLUMN membertbl.grade IS 'silver, gold, vip';
+
+ALTER TABLE board2
+  ADD CONSTRAINT FK_membertbl_TO_board
+    FOREIGN KEY (id)
+    REFERENCES membertbl (id);
+    
