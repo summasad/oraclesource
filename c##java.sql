@@ -75,7 +75,10 @@ SELECT * FROM MEMBERTBL
 --아이디와 비밀번호가 일치하는 회원 조회(로그인)
 SELECT USERID,NAME,PASSWORD FROM MEMBERTBL WHERE userid = 'hong123' AND password='hong123';
 
+--중복 아이디 검사
+SELECT * FROM MEMBERTBL WHERE userid = 'hong123';
 
-
+--비밀번호 변경
+UPDATE MEMBERTBL SET PASSWORD = 'hong456' WHERE USERID = 'hong123' AND PASSWORD = 'hong123';
 
 
