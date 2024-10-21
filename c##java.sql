@@ -81,4 +81,27 @@ SELECT * FROM MEMBERTBL WHERE userid = 'hong123';
 --비밀번호 변경
 UPDATE MEMBERTBL SET PASSWORD = 'hong456' WHERE USERID = 'hong123' AND PASSWORD = 'hong123';
 
+CREATE TABLE BOARD(
+	BNO NUMBER(8) PRIMARY KEY,
+	NAME VARCHAR2(20) NOT NULL,
+	PASSWORD VARCHAR2(20) NOT NULL,
+	title VARCHAR2(100) NOT NULL,
+	content VARCHAR2(2000) NOT NULL,
+	attach VARCHAR2(1000) NOT NULL,
+	re_ref NUMBER(8) NOT NULL,
+	re_lev NUMBER(8) NOT NULL,
+	re_seq NUMBER(8) NOT NULL,
+	readcnt NUMBER(8) DEFAULT '0',
+	REGDATE DATE DEFAULT SYSDATE
+);
+CREATE SEQUENCE BOARD_SEQ;
 
+--board attach not null ==> null 가능
+ALTER TABLE BOARD MODIFY(attach NULL);
+
+INSERT INTO BOARD(BNO,NAME,PASSWORD,title,content,re_ref,re_lev,re_seq)
+values(BOARD_SEQ.nextval,'hong','12345','board 작성','board 작성',BOARD_SEQ.currval,0,0);
+
+--수정
+--bno와 password 일치 시 title, content 수정
+UPDATE BOARD SET title = '제목', content='내용' WHERE BNO=1 AND PASSWORD =12345;
