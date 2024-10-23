@@ -105,3 +105,73 @@ values(BOARD_SEQ.nextval,'hong','12345','board 작성','board 작성',BOARD_SEQ.
 --수정
 --bno와 password 일치 시 title, content 수정
 UPDATE BOARD SET title = '제목', content='내용' WHERE BNO=1 AND PASSWORD =12345;
+
+DELETE BOARD WHERE BNO = 1;
+
+INSERT INTO BOARD(BNO,NAME,PASSWORD,title,content,re_ref,re_lev,re_seq) VALUES(board_seq.nextval,?,?,?,?,board_seq.currval,0,0)
+
+UPDATE BOARD SET readcnt = READCNT + 1 WHERE BNO =3;
+
+--더미 데이터
+INSERT INTO BOARD(BNO,NAME,PASSWORD,title,content,re_ref,re_lev,re_seq)
+(SELECT BOARD_SEQ.nextval,NAME,PASSWORD,title,content,board_seq.currval,re_lev,re_seq FROM BOARD);
+
+SELECT count(*) FROM board;
+
+--댓글처리
+--가장 최신글에 댓글 달기
+SELECT * FROM BOARD WHERE bno=(SELECT max(bno) FROM board);
+--그룹 개념(re_ref)
+--댓글 추가 인서트는 currval=>부모글의 re_ref 넣어주기
+--re_lev : 부모글 re_lev + 1
+--re_seq :부모글 re_seq + 1
+INSERT INTO BOARD(BNO,NAME,PASSWORD,title,content,re_ref,re_lev,re_seq)
+values(BOARD_SEQ.nextval,'hong','12345','board 작성','board 작성',514,1,1);
+
+--UPDATE BOARD SET RE_LEV = 1, RE_SEQ = 1 WHERE bno=515;
+
+--원본글과 댓글 함께 조회
+SELECT * FROM BOARD WHERE re_ref = 514;
+
+--두번째 댓글추가 (최신순 조회 : RE_SEQ)
+--RE_SEQ 가 낮을 수록 최신글
+
+--원본글
+--ㄴ댓글2
+--	ㄴ댓글2의 댓글
+--ㄴ댓글1
+
+-- 댓글2 추가
+-- 먼저 들어간 댓글이 있다면 re_seq 값 +1 해야함
+--UPDATE BOARD SET RE_SEQ =RE_SEQ +1 WHERE RE_REF = 514 AND RE_SEQ > 부모글 re_seq
+UPDATE BOARD SET RE_SEQ =RE_SEQ +1 WHERE RE_REF = 514 AND RE_SEQ >0;
+
+INSERT INTO BOARD(BNO,NAME,PASSWORD,title,content,re_ref,re_lev,re_seq)
+values(BOARD_SEQ.nextval,'hong','12345','댓글 board 작성','댓글 board 작성',514,1,1);
+
+SELECT * FROM BOARD WHERE RE_REF =514 ORDER BY RE_REF DESC, RE_SEQ ASC; 
+
+--검색
+--조건 title or content or name
+--검색어
+SELECT bno,name,title,readcnt,regdate,re_lev FROM BOARD WHERE title LIKE '%파일%' order by RE_REF DESC, RE_SEQ ASC;
+SELECT bno,name,title,readcnt,regdate,re_lev FROM BOARD WHERE content LIKE '%답변%' order by RE_REF DESC, RE_SEQ ASC;
+SELECT bno,name,title,readcnt,regdate,re_lev FROM BOARD WHERE name LIKE '%홍길동%' order by RE_REF DESC, RE_SEQ ASC;
+
+--오라클 페이지 나누기
+--정렬이 완료된 후 번호를 매겨서 일부분 추출
+SELECT rownum, bno,name,title,readcnt,regdate,re_lev FROM BOARD ORDER BY RE_REF DESC, RE_SEQ ASC; 
+
+SELECT rownum, bno,name,title,readcnt,regdate,re_lev FROM BOARD ORDER BY bno DESC; 
+
+SELECT rnum, bno,name,title,readcnt,regdate,re_lev
+FROM (SELECT rownum rnum, bno,name,title,readcnt,regdate,re_lev
+	  FROM (SELECT bno,name,title,readcnt,regdate,re_lev FROM BOARD ORDER BY RE_REF DESC, RE_SEQ ASC)
+	  WHERE rownum <= 20)
+WHERE rnum > 10;
+
+--1 page 요청 : rownum <= 10 rnum>0
+--2 page 요청 : rownum <= 20 rnum>10
+--3 page 요청 : rownum <= 30 rnum>20
+--n page 요청 : rownum <= 10*n rnum>10*(n-1)
+
