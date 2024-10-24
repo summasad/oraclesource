@@ -175,3 +175,7 @@ WHERE rnum > 10;
 --3 page 요청 : rownum <= 30 rnum>20
 --n page 요청 : rownum <= 10*n rnum>10*(n-1)
 
+-- 검색어 기준의 전체 개수
+SELECT count(*) FROM board WHERE title LIKE '%파일%';
+SELECT count(*) FROM board WHERE content LIKE '%답변%';
+SELECT count(*) FROM board WHERE name LIKE '%홍길동%';
