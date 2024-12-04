@@ -67,4 +67,53 @@ WHERE
 		MOVIE_IMAGE mi
 	GROUP BY
 		mi.movie_mno);
+	
+SELECT
+	m2.MNO ,
+	(
+	SELECT
+		avg(r2.grade)
+	FROM
+		REVIEW r2
+	WHERE
+		m2.MNO = r2.MOVIE_MNO) avg,
+	(
+	SELECT
+		COUNT(r2.rno)
+	FROM
+		REVIEW r2
+	WHERE
+		m2.MNO = r2.MOVIE_MNO) cnt,
+	mi3."PATH" ,
+	mi3.UUID ,
+	mi3.IMG_NAME
+FROM
+	MOVIE m2
+LEFT JOIN MOVIE_IMAGE mi3 ON
+	m2.MNO = mi3.MOVIE_MNO
+WHERE
+	m2.mno=1;
+
+--닉네임 변경
+UPDATE M_MEMBER SET NICKNAME ='starbucks' WHERE EMAIL ='user1@gmail.com';
+
+--비밀번호 변경
+UPDATE M_MEMBER SET PASSWORD ='' WHERE EMAIL ='user1@gmail.com' AND PASSWORD ='';
+
+DELETE FROM REVIEW r 
+WHERE r.MEMBER_mid=49;
+
+DELETE	
+FROM
+	M_MEMBER mm
+WHERE
+	mm.email = 'user49@gmail.com'
+	AND mm.password = '{bcrypt}$2a$10$8BGNvaN0SBrXOlrvg8FK/uy8oJAYJb/LFZMQQe7ixtdqdRmnoOjm6';
+
+--어제 날짜의 movie_image 추출
+SELECT * FROM MOVIE_IMAGE mi WHERE mi."PATH"= TO_char(SYSDATE-1,'YYYY/MM/DD');  
+
+
+
+
 
