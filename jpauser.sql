@@ -112,10 +112,50 @@ FROM BOARD b JOIN member m ON b.WRITER_EMAIL = m.email;
 DELETE FROM BOARD b WHERE b.bno=4;
 DELETE FROM REPLY r WHERE r.board_bno=4;
 
+--booktbl + publisher+category
+--카테고리명, 제목, 저자, 출판사명
+SELECT
+	b.title,
+	b.writer,
+	p.publisher_name,
+	c.CATEGORY_NAME
+FROM
+	BOOKTBL b
+JOIN PUBLISHER p ON b.PUBLISHER_PUBLISHER_ID = p.PUBLISHER_ID
+JOIN CATEGORYTBL c ON b.CATEGORY_CATEGORY_ID = c.CATEGORY_ID;
 
+--페이지 나누기 + 검색
 
+SELECT *
+FROM (SELECT rownum rn, b.* 
+FROM (SELECT * FROM BOOKTBL ORDER BY BOOK_ID DESC) b
+WHERE (title LIKE '%한글%' OR content LIKE '%나라%') 
+AND rownum <= 20)
+WHERE rn>10; 
 
-
+SELECT t.book_id, t.title, t.writer, t.publisher_id, t.publisher_name, t.category_id, t.category_name
+FROM 
+(SELECT
+	rownum rn,
+	b1.*
+FROM
+	(
+	SELECT
+		*
+	FROM
+		BOOKTBL b
+	JOIN PUBLISHER p ON
+		b.PUBLISHER_PUBLISHER_ID = p.PUBLISHER_ID
+	JOIN CATEGORYTBL c ON
+		b.CATEGORY_CATEGORY_ID = c.CATEGORY_ID
+	WHERE
+		b.BOOK_ID > 0
+	ORDER BY
+		b.BOOK_ID DESC) b1
+WHERE
+	--(category_name LIKE '%소설%') AND 
+	rownum <= 20) t
+WHERE rn>10;
 
 
 
