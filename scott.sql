@@ -1261,7 +1261,7 @@ DROP INDEX IDX_EMP_SAL;
 	--		 자주 활용하는 SELECT 문을 뷰로 저장해 놓은 후 다른 SQL 구문에서 활용(==CONSOLE)
 	--보안성 : 노출되면 안되는 컬럼을 제외하여 접근 허용
 	--권한이 불충분합니다, 뷰를 생성할 수 있는 권한 먼저 부여받기(ADMIN에게서)
---CREATE [OR REPLACE] VIEW 뷰이름(열이름1, 열이름2...) AS (SELECT 구문); //REPLACE는 필수 아님
+--CREATE [OR REPLACE] VIEW 뷰이름(열이름1, 열이름2...) AS (SELEC 구문); //REPLACE는 필수 아님
 
 --EMP 테이블의 20부서에 해당하는 사원들의 뷰 생성
 CREATE VIEW VW_EMP_20 AS (SELECT EMPNO, ENAME, JOB, DEPTNO FROM EMP WHERE DEPTNO = 20);
